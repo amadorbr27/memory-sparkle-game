@@ -84,11 +84,41 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'flip-in': {
+					'0%': {
+						transform: 'rotateY(-90deg)'
+					},
+					'100%': {
+						transform: 'rotateY(0deg)'
+					}
+				},
+				'bounce-scale': {
+					'0%, 20%, 50%, 80%, 100%': {
+						transform: 'scale(1)'
+					},
+					'40%': {
+						transform: 'scale(1.1)'
+					},
+					'60%': {
+						transform: 'scale(1.05)'
+					}
+				},
+				'glow-pulse': {
+					'0%, 100%': {
+						boxShadow: 'var(--card-shadow)'
+					},
+					'50%': {
+						boxShadow: 'var(--glow-primary)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'flip-in': 'flip-in 0.6s ease-out',
+				'bounce-scale': 'bounce-scale 0.8s ease-in-out',
+				'glow-pulse': 'glow-pulse 2s ease-in-out infinite'
 			}
 		}
 	},

@@ -8,35 +8,44 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 270 20% 8%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 270 15% 12%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 270 15% 12%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 280 100% 70%;
+    --primary-foreground: 270 20% 8%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 200 100% 60%;
+    --secondary-foreground: 270 20% 8%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 270 10% 20%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 320 100% 65%;
+    --accent-foreground: 270 20% 8%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 270 10% 25%;
+    --input: 270 10% 20%;
+    --ring: 280 100% 70%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
+
+    /* Game specific colors */
+    --game-bg: linear-gradient(135deg, hsl(270, 30%, 12%) 0%, hsl(280, 40%, 18%) 50%, hsl(290, 35%, 15%) 100%);
+    --card-front: linear-gradient(145deg, hsl(280, 80%, 60%) 0%, hsl(320, 70%, 65%) 100%);
+    --card-back: linear-gradient(145deg, hsl(240, 50%, 25%) 0%, hsl(260, 60%, 30%) 100%);
+    --card-matched: linear-gradient(145deg, hsl(120, 60%, 50%) 0%, hsl(140, 70%, 55%) 100%);
+    --card-shadow: 0 8px 32px hsl(280, 100%, 70%, 0.3);
+    --glow-primary: 0 0 30px hsl(280, 100%, 70%, 0.5);
+    --glow-secondary: 0 0 20px hsl(320, 100%, 65%, 0.4);
 
     --sidebar-background: 0 0% 98%;
 
@@ -101,5 +110,71 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Game specific styles */
+@layer components {
+  .game-background {
+    background: var(--game-bg);
+    min-height: 100vh;
+  }
+  
+  .memory-card {
+    perspective: 1000px;
+    cursor: pointer;
+  }
+  
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+  
+  .card-flipped .card-inner {
+    transform: rotateY(180deg);
+  }
+  
+  .card-front,
+  .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: var(--card-shadow);
+  }
+  
+  .card-front {
+    transform: rotateY(180deg);
+    background: var(--card-front);
+  }
+  
+  .card-back {
+    background: var(--card-back);
+  }
+  
+  .card-matched .card-front {
+    background: var(--card-matched);
+    box-shadow: var(--glow-primary);
+  }
+  
+  .pulse-glow {
+    animation: pulse-glow 1.5s ease-in-out infinite alternate;
+  }
+  
+  @keyframes pulse-glow {
+    from {
+      box-shadow: var(--card-shadow);
+    }
+    to {
+      box-shadow: var(--glow-secondary);
+    }
   }
 }
