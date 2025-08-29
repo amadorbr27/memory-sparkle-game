@@ -1,21 +1,41 @@
+import { Link } from 'react-router-dom';
 import { useMemoryGame } from '@/hooks/useMemoryGame';
+import { useAuth } from '@/hooks/useAuth';
 import { MemoryCard } from './MemoryCard';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Trophy, RotateCcw, Target, Zap, Grid3x3 } from 'lucide-react';
+import { Trophy, RotateCcw, Target, Zap, Grid3x3, User, LogOut } from 'lucide-react';
 
 export const MemoryGame = () => {
-  const { cards, score, moves, gameComplete, gridSize, flipCard, initializeGame } = useMemoryGame();
+  const { cards, score, moves, gameComplete, gridSize, flipCard, initializeGame, getBestScore } = useMemoryGame();
+  const { user, signOut } = useAuth();
 
   return (
     <div className="game-background p-4 flex flex-col items-center justify-center min-h-screen">
+      {/* User Actions */}
+      <div className="absolute top-4 right-4 flex gap-2">
+        {!user ? (
+          <Link to="/auth">
+            <Button variant="outline" size="sm" className="flex items-center gap-2">
+              <User className="w-4 h-4" />
+              Entrar
+            </Button>
+          </Link>
+        ) : (
+          <Button variant="outline" size="sm" onClick={signOut} className="flex items-center gap-2">
+            <LogOut className="w-4 h-4" />
+            Sair
+          </Button>
+        )}
+      </div>
+
       {/* Header */}
       <div className="text-center mb-6">
         <h1 className="text-4xl sm:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
           Jogo da Memória
         </h1>
         <p className="text-muted-foreground text-lg">
-          Encontre todos os pares!
+          {user ? `Bem-vindo de volta!` : 'Encontre todos os pares!'}
         </p>
       </div>
 
@@ -53,6 +73,16 @@ export const MemoryGame = () => {
             <span className="font-semibold">{moves}</span>
           </div>
         </Card>
+        {user && (
+          <Card className="px-4 py-2 bg-card/50 backdrop-blur-sm border-accent/20">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-accent" />
+              <span className="font-semibold text-xs">
+                Melhor: {getBestScore(gridSize)}
+              </span>
+            </div>
+          </Card>
+        )}
       </div>
 
       {/* Game Board */}
@@ -76,7 +106,10 @@ export const MemoryGame = () => {
         {gameComplete && (
           <div className="flex items-center gap-2 bg-gradient-to-r from-primary to-accent px-6 py-3 rounded-xl text-white font-semibold animate-glow-pulse">
             <Zap className="w-5 h-5" />
-            <span>Parabéns! Você venceu!</span>
+            <span>
+              Parabéns! Você venceu!
+              {user && <span className="block text-xs mt-1">✅ Pontuação salva!</span>}
+            </span>
           </div>
         )}
       </div>
@@ -87,6 +120,11 @@ export const MemoryGame = () => {
           Toque nas cartas para virá-las. Encontre os pares para marcar pontos. 
           Menos movimentos = mais pontos de bônus!
         </p>
+        {!user && (
+          <p className="text-muted-foreground text-xs mt-2">
+            💡 Faça login para salvar suas pontuações!
+          </p>
+        )}
       </div>
     </div>
   );

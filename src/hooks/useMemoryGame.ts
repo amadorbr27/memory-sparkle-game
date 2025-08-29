@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { useGameScores } from './useGameScores';
 
 export interface Card {
   id: number;
@@ -18,6 +19,8 @@ export const useMemoryGame = () => {
   const [gameComplete, setGameComplete] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [gridSize, setGridSize] = useState<'4x4' | '6x6'>('4x4');
+  const [gameStartTime, setGameStartTime] = useState<number | null>(null);
+  const { saveScore, getBestScore } = useGameScores();
 
   const initializeGame = useCallback((newGridSize?: '4x4' | '6x6') => {
     const targetSize = newGridSize || gridSize;
@@ -36,6 +39,7 @@ export const useMemoryGame = () => {
     setMoves(0);
     setGameComplete(false);
     setIsChecking(false);
+    setGameStartTime(Date.now());
     if (newGridSize) setGridSize(newGridSize);
   }, [gridSize]);
 
@@ -89,9 +93,16 @@ export const useMemoryGame = () => {
     if (cards.length > 0 && matchedCards.length === cards.length) {
       setGameComplete(true);
       const bonusPoints = Math.max(100 - moves * 2, 10);
-      setScore(prev => prev + bonusPoints);
+      const finalScore = score + bonusPoints;
+      setScore(finalScore);
+      
+      // Save score to database
+      if (gameStartTime) {
+        const completionTime = Math.floor((Date.now() - gameStartTime) / 1000);
+        saveScore(gridSize, finalScore, moves, completionTime);
+      }
     }
-  }, [cards, moves]);
+  }, [cards, moves, score, gridSize, gameStartTime, saveScore]);
 
   useEffect(() => {
     initializeGame();
@@ -106,5 +117,6 @@ export const useMemoryGame = () => {
     gridSize,
     flipCard,
     initializeGame,
+    getBestScore
   };
 };
