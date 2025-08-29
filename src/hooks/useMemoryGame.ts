@@ -7,7 +7,8 @@ export interface Card {
   isMatched: boolean;
 }
 
-const EMOJIS = ['🎮', '🚀', '⭐', '🎯', '🔥', '⚡', '🌈', '💎'];
+const EMOJIS_4X4 = ['🎮', '🚀', '⭐', '🎯', '🔥', '⚡', '🌈', '💎'];
+const EMOJIS_6X6 = ['🎮', '🚀', '⭐', '🎯', '🔥', '⚡', '🌈', '💎', '🎭', '🎨', '🎪', '🎵', '🎸', '🎹', '🎺', '🎷', '🏆', '🎊'];
 
 export const useMemoryGame = () => {
   const [cards, setCards] = useState<Card[]>([]);
@@ -16,9 +17,12 @@ export const useMemoryGame = () => {
   const [moves, setMoves] = useState(0);
   const [gameComplete, setGameComplete] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
+  const [gridSize, setGridSize] = useState<'4x4' | '6x6'>('4x4');
 
-  const initializeGame = useCallback(() => {
-    const shuffledEmojis = [...EMOJIS, ...EMOJIS].sort(() => Math.random() - 0.5);
+  const initializeGame = useCallback((newGridSize?: '4x4' | '6x6') => {
+    const targetSize = newGridSize || gridSize;
+    const emojis = targetSize === '4x4' ? EMOJIS_4X4 : EMOJIS_6X6;
+    const shuffledEmojis = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
     const newCards = shuffledEmojis.map((emoji, index) => ({
       id: index,
       emoji,
@@ -32,7 +36,8 @@ export const useMemoryGame = () => {
     setMoves(0);
     setGameComplete(false);
     setIsChecking(false);
-  }, []);
+    if (newGridSize) setGridSize(newGridSize);
+  }, [gridSize]);
 
   const flipCard = useCallback((id: number) => {
     if (isChecking || flippedCards.length >= 2) return;
@@ -98,6 +103,7 @@ export const useMemoryGame = () => {
     moves,
     gameComplete,
     isChecking,
+    gridSize,
     flipCard,
     initializeGame,
   };

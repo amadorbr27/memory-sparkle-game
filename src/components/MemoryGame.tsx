@@ -2,10 +2,10 @@ import { useMemoryGame } from '@/hooks/useMemoryGame';
 import { MemoryCard } from './MemoryCard';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Trophy, RotateCcw, Target, Zap } from 'lucide-react';
+import { Trophy, RotateCcw, Target, Zap, Grid3x3 } from 'lucide-react';
 
 export const MemoryGame = () => {
-  const { cards, score, moves, gameComplete, flipCard, initializeGame } = useMemoryGame();
+  const { cards, score, moves, gameComplete, gridSize, flipCard, initializeGame } = useMemoryGame();
 
   return (
     <div className="game-background p-4 flex flex-col items-center justify-center min-h-screen">
@@ -17,6 +17,26 @@ export const MemoryGame = () => {
         <p className="text-muted-foreground text-lg">
           Encontre todos os pares!
         </p>
+      </div>
+
+      {/* Difficulty Selector */}
+      <div className="flex gap-2 mb-4">
+        <Button 
+          onClick={() => initializeGame('4x4')}
+          variant={gridSize === '4x4' ? 'default' : 'outline'}
+          className="flex items-center gap-2"
+        >
+          <Grid3x3 className="w-4 h-4" />
+          Fácil (4x4)
+        </Button>
+        <Button 
+          onClick={() => initializeGame('6x6')}
+          variant={gridSize === '6x6' ? 'default' : 'outline'}
+          className="flex items-center gap-2"
+        >
+          <Grid3x3 className="w-4 h-4" />
+          Difícil (6x6)
+        </Button>
       </div>
 
       {/* Game Stats */}
@@ -36,7 +56,7 @@ export const MemoryGame = () => {
       </div>
 
       {/* Game Board */}
-      <div className="grid grid-cols-4 gap-3 sm:gap-4 mb-6 p-4 bg-card/20 backdrop-blur-sm rounded-2xl border border-primary/10">
+      <div className={`grid ${gridSize === '4x4' ? 'grid-cols-4' : 'grid-cols-6'} gap-3 sm:gap-4 mb-6 p-4 bg-card/20 backdrop-blur-sm rounded-2xl border border-primary/10 max-w-fit`}>
         {cards.map((card) => (
           <MemoryCard key={card.id} card={card} onClick={flipCard} />
         ))}
@@ -45,7 +65,7 @@ export const MemoryGame = () => {
       {/* Controls */}
       <div className="flex gap-4">
         <Button 
-          onClick={initializeGame}
+          onClick={() => initializeGame()}
           variant="secondary"
           className="flex items-center gap-2 bg-gradient-to-r from-secondary to-accent hover:from-secondary/90 hover:to-accent/90 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg"
         >
