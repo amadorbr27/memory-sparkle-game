@@ -90,7 +90,7 @@ export const useMemoryGame = () => {
 
   useEffect(() => {
     const matchedCards = cards.filter(c => c.isMatched);
-    if (cards.length > 0 && matchedCards.length === cards.length) {
+    if (cards.length > 0 && matchedCards.length === cards.length && !gameComplete) {
       setGameComplete(true);
       const bonusPoints = Math.max(100 - moves * 2, 10);
       const finalScore = score + bonusPoints;
@@ -102,7 +102,7 @@ export const useMemoryGame = () => {
         saveScore(gridSize, finalScore, moves, completionTime);
       }
     }
-  }, [cards, moves, score, gridSize, gameStartTime]);
+  }, [cards, moves, score, gridSize, gameStartTime, gameComplete]);
 
   useEffect(() => {
     initializeGame();
