@@ -102,7 +102,7 @@ export const useMemoryGame = () => {
         saveScore(gridSize, finalScore, moves, completionTime);
       }
     }
-  }, [cards, moves, score, gridSize, gameStartTime, saveScore]);
+  }, [cards, moves, score, gridSize, gameStartTime]);
 
   useEffect(() => {
     initializeGame();
