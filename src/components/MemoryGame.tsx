@@ -12,10 +12,10 @@ export const MemoryGame = () => {
   const { user, signOut, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Redirecionar para auth se não estiver autenticado
+  // Redirecionar para home se não estiver autenticado
   useEffect(() => {
     if (!loading && !user) {
-      navigate('/auth');
+      navigate('/');
     }
   }, [user, loading, navigate]);
 
