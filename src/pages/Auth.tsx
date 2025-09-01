@@ -100,13 +100,6 @@ const Auth = () => {
     setIsLoading(false);
   };
 
-  const handleContinueAsGuest = () => {
-    toast({
-      title: "Continuando como visitante",
-      description: "Você pode jogar, mas suas pontuações não serão salvas."
-    });
-    navigate('/');
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
@@ -223,29 +216,6 @@ const Auth = () => {
             </TabsContent>
           </Tabs>
 
-          {/* Guest Option */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Ou
-              </span>
-            </div>
-          </div>
-
-          <Button 
-            onClick={handleContinueAsGuest}
-            variant="ghost"
-            className="w-full"
-          >
-            Continuar como visitante
-          </Button>
-
-          <p className="text-xs text-muted-foreground text-center">
-            Como visitante, você pode jogar normalmente, mas suas pontuações não serão salvas.
-          </p>
         </CardContent>
       </Card>
     </div>

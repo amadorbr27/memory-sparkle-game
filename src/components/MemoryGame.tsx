@@ -1,32 +1,49 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMemoryGame } from '@/hooks/useMemoryGame';
 import { useAuth } from '@/hooks/useAuth';
 import { MemoryCard } from './MemoryCard';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Trophy, RotateCcw, Target, Zap, Grid3x3, User, LogOut } from 'lucide-react';
+import { useEffect } from 'react';
 
 export const MemoryGame = () => {
   const { cards, score, moves, gameComplete, gridSize, flipCard, initializeGame, getBestScore } = useMemoryGame();
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirecionar para auth se não estiver autenticado
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate]);
+
+  // Mostrar loading enquanto verifica autenticação
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Verificando autenticação...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Não renderizar o jogo se não estiver autenticado
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="game-background p-4 flex flex-col items-center justify-center min-h-screen">
       {/* User Actions */}
       <div className="absolute top-4 right-4 flex gap-2">
-        {!user ? (
-          <Link to="/auth">
-            <Button variant="outline" size="sm" className="flex items-center gap-2">
-              <User className="w-4 h-4" />
-              Entrar
-            </Button>
-          </Link>
-        ) : (
-          <Button variant="outline" size="sm" onClick={signOut} className="flex items-center gap-2">
-            <LogOut className="w-4 h-4" />
-            Sair
-          </Button>
-        )}
+        <Button variant="outline" size="sm" onClick={signOut} className="flex items-center gap-2">
+          <LogOut className="w-4 h-4" />
+          Sair
+        </Button>
       </div>
 
       {/* Header */}
@@ -35,7 +52,7 @@ export const MemoryGame = () => {
           Jogo da Memória
         </h1>
         <p className="text-muted-foreground text-lg">
-          {user ? `Bem-vindo de volta!` : 'Encontre todos os pares!'}
+          Bem-vindo de volta! Encontre todos os pares!
         </p>
       </div>
 
@@ -73,16 +90,14 @@ export const MemoryGame = () => {
             <span className="font-semibold">{moves}</span>
           </div>
         </Card>
-        {user && (
-          <Card className="px-4 py-2 bg-card/50 backdrop-blur-sm border-accent/20">
-            <div className="flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-accent" />
-              <span className="font-semibold text-xs">
-                Melhor: {getBestScore(gridSize)}
-              </span>
-            </div>
-          </Card>
-        )}
+        <Card className="px-4 py-2 bg-card/50 backdrop-blur-sm border-accent/20">
+          <div className="flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-accent" />
+            <span className="font-semibold text-xs">
+              Melhor: {getBestScore(gridSize)}
+            </span>
+          </div>
+        </Card>
       </div>
 
       {/* Game Board */}
@@ -108,7 +123,7 @@ export const MemoryGame = () => {
             <Zap className="w-5 h-5" />
             <span>
               Parabéns! Você venceu!
-              {user && <span className="block text-xs mt-1">✅ Pontuação salva!</span>}
+              <span className="block text-xs mt-1">✅ Pontuação salva!</span>
             </span>
           </div>
         )}
@@ -120,11 +135,6 @@ export const MemoryGame = () => {
           Toque nas cartas para virá-las. Encontre os pares para marcar pontos. 
           Menos movimentos = mais pontos de bônus!
         </p>
-        {!user && (
-          <p className="text-muted-foreground text-xs mt-2">
-            💡 Faça login para salvar suas pontuações!
-          </p>
-        )}
       </div>
     </div>
   );
