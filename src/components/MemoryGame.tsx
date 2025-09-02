@@ -39,7 +39,10 @@ export const MemoryGame = () => {
   return (
     <div className="game-background p-4 flex flex-col items-center justify-center min-h-screen">
       {/* User Actions */}
-      <div className="absolute top-4 right-4 flex gap-2">
+      <div className="absolute top-4 right-4 flex items-center gap-3">
+        <span className="text-sm text-muted-foreground">
+          Olá, {user.user_metadata?.display_name?.split(' ')[0] || user.email?.split('@')[0]}
+        </span>
         <Button variant="outline" size="sm" onClick={signOut} className="flex items-center gap-2">
           <LogOut className="w-4 h-4" />
           Sair
