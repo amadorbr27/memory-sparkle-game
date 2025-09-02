@@ -32,7 +32,7 @@ const Home = () => {
           {user && (
             <div className="flex items-center gap-3">
               <span className="text-sm text-muted-foreground">
-                Olá, {user.user_metadata?.display_name?.split(' ')[0] || user.email?.split('@')[0]}
+                Olá, {user.email}
               </span>
               <Button onClick={() => navigate('/game')} className="flex items-center gap-2">
                 <Play className="w-4 h-4" />
